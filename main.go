@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github/Hiinnn/practice-go/config"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
@@ -10,8 +11,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	dsn := "user=postgres password=181113Hk dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := config.GetConfig(config.BuildDBConfig())
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	fmt.Print(db, err)
-	r.Run()
+	fmt.Println(db, err)
+	r.Run(":8080")
 }
