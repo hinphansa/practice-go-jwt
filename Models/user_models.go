@@ -1,7 +1,7 @@
 package models
 
-// Profile structure
-type Profile struct {
+// User structure
+type User struct {
 	Picture  []byte `json:"pic"`
 	Fullname string `json:"fullname"`
 	Contact  string `json:"contact"`

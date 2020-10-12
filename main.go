@@ -3,16 +3,23 @@ package main
 import (
 	"fmt"
 	"github/Hiinnn/practice-go/config"
+	"github/Hiinnn/practice-go/models"
+	"github/Hiinnn/practice-go/routes"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+var err error
+
 func main() {
-	r := gin.Default()
 	dsn := config.GetConfig(config.BuildDBConfig())
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	fmt.Println(db, err)
+	config.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Println("Status :", err)
+	}
+	config.DB.AutoMigrate(&models.User{})
+
+	r := routes.SetupRouter()
 	r.Run(":8080")
 }

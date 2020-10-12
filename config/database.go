@@ -2,7 +2,12 @@ package config
 
 import (
 	"fmt"
+
+	"gorm.io/gorm"
 )
+
+// DB -> Use for calling a function of database
+var DB *gorm.DB
 
 // DBConfig -> Database configuration
 type DBConfig struct {
