@@ -2,29 +2,19 @@ package controllers
 
 import (
 	"github/Hiinnn/practice-go/models"
+	"github/Hiinnn/practice-go/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// GetUsers -> Get all users info
-func GetUsers(c *gin.Context) {
-	var user []models.User
-	err := models.GetAllUsers(&user)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, user)
-	}
-}
-
-// CreateUser -> Create new user
-func CreateUser(c *gin.Context) {
+// Signup -> Create new user
+func Signup(c *gin.Context) {
 	var user models.User
-	c.BindJSON(&user)
-	err := models.CreateUser(&user)
+	c.Bind(&user)
+	err := services.Signup(&user)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, user)
 	}
