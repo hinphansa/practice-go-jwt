@@ -10,7 +10,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// var secretKey = []byte(os.Open("secret_key.txt"))
+var secretKey []byte
 
 /* -------------------------------------------------------------------------- */
 /*                               Public Function                              */
@@ -64,6 +64,11 @@ func GetUSerData(tokenString string) (interface{}, error) {
 	return user, nil
 }
 
+// SetSecretKey -> Set secret key from file
+func SetSecretKey(key []byte) {
+	secretKey = key
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              Private Function                              */
 /* -------------------------------------------------------------------------- */
@@ -75,7 +80,7 @@ func createJWTToken(username string) (string, error) {
 	claims["aud"] = username                              //audience
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix() // expiration time
 
-	t, err := token.SignedString([]byte("secretkeytxt"))
+	t, err := token.SignedString(secretKey)
 	if err != nil {
 		return "", err
 	}
@@ -85,7 +90,7 @@ func createJWTToken(username string) (string, error) {
 
 func parseJWTToken(token string) (interface{}, error) {
 	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secretkeytxt"), nil
+		return secretKey, nil
 	})
 
 	if err != nil {
