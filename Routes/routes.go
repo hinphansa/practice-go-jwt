@@ -11,7 +11,9 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	group1 := r.Group("/user-api")
 	{
-		group1.POST("signup", controllers.Signup)
+		group1.GET("me", controllers.GetUserData)
+		group1.POST("signin", controllers.Signin)
+		group1.POST("register", controllers.Register)
 	}
 	return r
 }

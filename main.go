@@ -10,9 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
-var err error
-
 func main() {
+	var err error
 	dsn := config.GetConfig(config.BuildDBConfig())
 	config.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
