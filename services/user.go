@@ -8,6 +8,7 @@ import (
 	"unicode"
 
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var secretKey []byte
@@ -18,16 +19,24 @@ var secretKey []byte
 
 // Register -> Create new user
 func Register(user *models.User) error {
+	// validate username & password
 	isMatch := validateUsername(user.Username)
 	if !isMatch {
 		return errors.New("invalid username")
 	}
-
 	isMatch = validatePassword(user.Password)
 	if !isMatch {
 		return errors.New("invalid password")
 	}
 
+	// hash password
+	hashedPW, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPW)
+
+	// insert user & check username exist
 	if result := config.DB.FirstOrCreate(user); result.RowsAffected == 0 {
 		return errors.New("username exists")
 	}
@@ -40,7 +49,8 @@ func Signin(user *models.User) (string, error) {
 	var queryUser models.User
 
 	config.DB.Find(&queryUser, "username = ?", user.Username)
-	if queryUser.Username == user.Username && queryUser.Password == user.Password {
+	compareErr := bcrypt.CompareHashAndPassword([]byte(queryUser.Password), []byte(user.Password))
+	if queryUser.Username == user.Username && compareErr == nil {
 		token, err := createJWTToken(user.Username)
 		return token, err
 	}

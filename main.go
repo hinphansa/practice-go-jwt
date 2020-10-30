@@ -21,14 +21,14 @@ func main() {
 	dsn := config.GetConfig(config.BuildDBConfig())
 	config.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return
+		panic(err)
 	}
 	config.DB.AutoMigrate(&models.User{})
 
 	// Set Secret Key
 	content, err = ioutil.ReadFile("secret_key.txt")
 	if err != nil {
-		return
+		panic(err)
 	}
 	services.SetSecretKey(content)
 
